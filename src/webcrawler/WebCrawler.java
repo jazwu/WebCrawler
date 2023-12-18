@@ -1,3 +1,4 @@
+package webcrawler;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -11,9 +12,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import dbquery.UrlDB;
 
 public class WebCrawler implements Runnable{
     private static final int MAX_DEPTH = 1;
+    private static final String DB_NAME = "crawled_urls";
     private static Set<String> visitedUrls = Collections.synchronizedSet(new HashSet<>());
 
     private int ID;
@@ -24,14 +27,14 @@ public class WebCrawler implements Runnable{
         System.out.println("WebCrawler created");
         startingUrl = url;
         ID = num;
-        // assign a thread to each bot
+        // Assign a thread to each bot
         thread = new Thread(this);
         thread.start();
     }
 
     private void crawl(String url, int depth){
         url = rightTrim(url);
-        if (depth > MAX_DEPTH || visitedUrls.contains(url)){
+        if (depth > MAX_DEPTH || UrlDB.contains(DB_NAME, url)){
             return;
         }
 
@@ -56,7 +59,7 @@ public class WebCrawler implements Runnable{
             if(con.response().statusCode() == 200){
                 System.out.println("Bot ID:"+ ID +" Received Webpage at "+url);
 
-                visitedUrls.add(url);
+                DB.
                 return doc;
             }
             return null;
@@ -65,7 +68,8 @@ public class WebCrawler implements Runnable{
         }
     }
 
-    private String rightTrim(String url){ // remove unnessecary '/' appending the end of the url
+    // remove unnessecary '/' appending the end of the url
+    private String rightTrim(String url){
         String trimUrl = url;
         int i=url.length()-1;
         while (url.charAt(i)=='/'){
@@ -107,6 +111,9 @@ public class WebCrawler implements Runnable{
     }
 
     public static void main(String[] args){
+        // create a database to store crawled urls
+        UrlDB.createDatabase(DB_NAME);
+
         ArrayList<WebCrawler> bots = new ArrayList<>();
         bots.add(new WebCrawler("https://www.npr.org", 1));
         bots.add(new WebCrawler("https://abcnews.go.com", 2));
