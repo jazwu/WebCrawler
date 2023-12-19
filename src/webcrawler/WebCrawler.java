@@ -8,25 +8,20 @@ import org.jsoup.select.Elements;
 import javax.json.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import dbquery.UrlDB;
 
 public class WebCrawler implements Runnable{
-    private static final int MAX_DEPTH = 1;
-    private static final String DB_NAME = "crawled_urls";
-    private static Set<String> visitedUrls = Collections.synchronizedSet(new HashSet<>());
-
     private int ID;
     private String startingUrl;
     private Thread thread;
+    private URLDatabase webcrawlerDB;
+    private int MAX_DEPTH;
 
-    public WebCrawler(String url, int num){
+    public WebCrawler(String url, int num, URLDatabase db, int maxDepth){
         System.out.println("WebCrawler created");
         startingUrl = url;
         ID = num;
+        webcrawlerDB = db;
+        MAX_DEPTH = maxDepth;
         // Assign a thread to each bot
         thread = new Thread(this);
         thread.start();
@@ -34,7 +29,7 @@ public class WebCrawler implements Runnable{
 
     private void crawl(String url, int depth){
         url = rightTrim(url);
-        if (depth > MAX_DEPTH || UrlDB.contains(DB_NAME, url)){
+        if (depth > MAX_DEPTH || webcrawlerDB.contains("crawled_urls", url)){
             return;
         }
 
@@ -59,7 +54,7 @@ public class WebCrawler implements Runnable{
             if(con.response().statusCode() == 200){
                 System.out.println("Bot ID:"+ ID +" Received Webpage at "+url);
 
-                DB.
+                webcrawlerDB.saveData("crawled_urls", url);
                 return doc;
             }
             return null;
@@ -104,27 +99,5 @@ public class WebCrawler implements Runnable{
 
     public Thread getThread(){
         return thread;
-    }
-
-    public int totalUrl(){
-        return visitedUrls.size();
-    }
-
-    public static void main(String[] args){
-        // create a database to store crawled urls
-        UrlDB.createDatabase(DB_NAME);
-
-        ArrayList<WebCrawler> bots = new ArrayList<>();
-        bots.add(new WebCrawler("https://www.npr.org", 1));
-        bots.add(new WebCrawler("https://abcnews.go.com", 2));
-        bots.add(new WebCrawler("https://www.nytimes.com", 3));
-
-        for(WebCrawler bot:bots){
-            try{
-                bot.getThread().join();
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
     }
 }
