@@ -27,7 +27,7 @@ public class URLDatabase {
     public void createTable(String tbname){
             try (Statement statement = connection.createStatement()) {
                 String dropTableQuery = "DROP TABLE IF EXISTS "+tbname;
-                statement.executeQuery(dropTableQuery);
+                statement.executeUpdate(dropTableQuery);
 
                 String createTableQuery = "CREATE TABLE "+tbname+" (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY," +
@@ -36,7 +36,7 @@ public class URLDatabase {
                         // "email VARCHAR(255))";
                 statement.executeUpdate(createTableQuery);
 
-                System.out.println("Table" +tbname+" created successfully in database "+this.dbname);
+                System.out.println("Table "+tbname+" created successfully in database "+this.dbname);
             } catch(SQLException e){
                 e.printStackTrace();
             }

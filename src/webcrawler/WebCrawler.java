@@ -5,8 +5,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import javax.json.*;
-
 import java.io.*;
 
 public class WebCrawler implements Runnable{
@@ -67,21 +65,11 @@ public class WebCrawler implements Runnable{
     private String rightTrim(String url){
         String trimUrl = url;
         int i=url.length()-1;
-        while (url.charAt(i)=='/'){
+        while (i>=0 && url.charAt(i)=='/'){
             trimUrl = url.substring(0, i);
             i--;
         }
         return trimUrl;
-    }
-
-    private JsonObject getDetail(Document document, String url) throws IOException{
-        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-        // data associated with url
-        jsonObjectBuilder.add("title", document.title());
-        jsonObjectBuilder.add("description", getMetaContent(document, "description"));
-        jsonObjectBuilder.add("keyword", getMetaContent(document, "keyword"));
-        jsonObjectBuilder.add("url", url);
-        return jsonObjectBuilder.build();
     }
 
     private String getMetaContent(Document document, String metaName){
