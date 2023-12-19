@@ -31,10 +31,10 @@ create database webcrawler;
 ## Result
 You can build at most three crawlers simultaneously. Each crawler needs a starting URL. You can customize the maximum depth (options are 1 to 5) on each crawler. Below is the result of crawling NPR website with 1 maximum depth. You can see number of URLs stored in our database currently on the top left screen.
 
-![screenshot_result](image.png)
+![screenshot_result](img/url1.png)
 
 Continuing crawling another URL, you'll see current URLs are 268 in total.
 
-![another_url](image-1.png)
+![another_url](img/url2.png)
 
 Note, when you restart the program, database will be cleared. Therefore, every time you start a new UI, you will find the crawled URLs in database is 0.

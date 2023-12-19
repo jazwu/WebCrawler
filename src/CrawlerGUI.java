@@ -19,7 +19,7 @@ public class CrawlerGUI extends JFrame{
     private JComboBox<Integer> depthComboBox1, depthComboBox2, depthComboBox3;
     private JTextField urlField1, urlField2, urlField3;
     private JLabel totalTimeLabel, totalUrlsLabel;
-    private JButton startButton, deleteButton;
+    private JButton startButton;
 
      public CrawlerGUI() {
         // Start database webcrawler
